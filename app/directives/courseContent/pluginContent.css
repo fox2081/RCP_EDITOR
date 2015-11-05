@@ -1,0 +1,39 @@
+
+
+/*新版试卷显示*/
+.practise-plugin {
+    background-color: #fff;
+    padding: 12px 0;
+    border: 3px solid #95dddb;
+    position: relative;/*width:420px;*/
+    border-radius: 8px;
+    cursor: default;
+    display: inline-block;
+}
+
+.practise-plugin .content {
+    line-height: 54px;
+    min-height: 54px;
+    margin: 0 15px;
+    background: url(http://localhost:63342/EDITOR/app/img/practise-default.png) no-repeat 0 center;
+    padding-left: 64px;
+}
+
+.practise-plugin a {
+    cursor: pointer;
+}
+
+.practise-plugin .edit,
+.practise-plugin .preview,
+.practise-plugin .delete {
+    margin-left: 20px;
+}
+
+.practise-plugin .preview {
+    margin-left: 20px;
+}
+
+.practise-plugin .edit-t {
+    position: absolute;
+    right: 0;
+}

@@ -1,0 +1,17 @@
+.g-page-box span.current,  .g-page-box span.current.disabled{
+    border-color: #30a5d1 !important;
+    color: #fff !important;
+    background: #30a5d1 !important;
+    text-decoration: none;
+    margin: 1px 5px;
+}
+/*.g-page-box a:hover,, .g-page-box span.current.disabled:hover*/
+.g-page-box .current.prev,.g-page-box .current.next{
+    border-color: #ccc !important;
+    color: #ccc !important;
+    background: #f8f8f8 !important;
+    cursor: default;
+}
+.g-page-box input{
+    width: 30px;
+}

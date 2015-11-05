@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp"> <!--<![endif]-->
+<head ng-app="myApp">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>My Editor</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="widthbutton=device-width, initial-scale=1">
+    <link rel="stylesheet" href="app.css">
+    <script type="text/javascript" src="lib/angular/angular.js"></script>
+    <script type="text/javascript"src="lib/angular/angular-route.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery-1.11.1.min.js"></script>
+
+
+    <script type="text/javascript" src="lib/textboxio/textboxio.js"></script>
+    <script type="text/javascript" src="lib/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="lib/tinymce/langs/zh_CN.js"></script>
+    <script type="text/javascript" src="lib/ckeditor/ckeditor.js"></script>
+
+
+    <script type="text/javascript" src="content2.js"></script>
+
+    <script type="text/javascript" src="directives/tbio.js"></script>
+    <script type="text/javascript" src="factories/tbioConfigFactory.js"></script>
+    <script type="text/javascript" src="factories/tbioValidationsFactory.js"></script>
+
+
+    <!-- Directives-->
+    <script type="text/javascript" src="directives/courseContent/contentEditor.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginPractice.html"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginPractice.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginVideo.html"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginVideo.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginContent.html"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginContent.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginEmbed.html"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginEmbed.js"></script>
+    <script type="text/javascript" src="directives/courseContent/contentContainer.html"></script>
+    <script type="text/javascript" src="directives/courseContent/contentContainer.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginPayArea.html"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginPayArea.js"></script>
+
+    <link rel="stylesheet" href="directives/courseContent/pluginContent.css">
+
+
+    <style></style>
+
+</head>
+<body ng-controller="ctrl">
+
+
+
+
+    <div class="top-head">
+        <div id="topEditor">
+        </div>
+        <div id="topBtn">
+            <button ng-click="execCmd.contentInsert()">分割</button>
+            <button ng-click="execCmd.contentInsert('practise')">插入练习</button>
+            <button ng-click="execCmd.contentInsert('video')">插入视频</button>
+        </div>
+    </div>
+    <button ng-click="getData()">GetData</button>
+
+
+    <!--<div style="width: 100%;height: 30px;line-height: 30px;position: fixed;background-color: #212121;color: white;z-index: 9999">-->
+        <!--<a ng-click="execCmd.showAll()">显示所有</a>-->
+        <!--<a ng-click="execCmd.bold()">加粗</a>-->
+        <!--<a ng-click="execCmd.italic()">斜体</a>-->
+        <!--<a ng-click="execCmd.fontColor()">颜色</a>-->
+    <!--</div>-->
+
+    <div style="margin-top: 80px;"></div>
+
+    <!-- 一级标题-->
+
+    <div class="main">
+        <div class="main-l">
+
+            <button ng-click="getData()">GetData</button>
+            <button ng-click="setData()">SetData</button>
+            <button ng-click="clearData()">Clear</button>
+
+            <div ng-repeat="itemFirst in content.childItems track by $index">
+                <p style="font-weight: bold;font-size: 16px" ng-show="itemFirst.type == 'titleFirst'">{{itemFirst.name}}</p>
+                <p style="font-size: 14px;padding-left: 10px;" ng-show="itemFirst.type == 'titleSecond'">{{itemFirst.name}}</p>
+            </div>
+
+
+            <button ng-click="newItem({type:'titleFirst',level:1,first:0,second:0,index:content.childItems.length})">添加章</button>
+        </div>
+        <div class="main-r" >
+
+            <div ng-repeat="item in content.childItems track by $index">
+
+                <div style="height: 30px;padding-left: 20px;line-height: 25px;"
+                     ng-init="item.move = false" ng-mouseover="item.move = true" ng-mouseleave="item.move = false">
+                    <div ng-show="item.move">
+                        <button ng-click="newItem({type:'practise',index:$index})">添加试卷</button>
+                        <button ng-click="newItem({type:'video',index:$index})">添加视频</button>
+                        <button ng-click="newItem({type:'content',index:$index},testContent)">添加内容</button>
+                        <button ng-click="newItem({type:'titleFirst',index:$index})">添加章</button>
+                        <button ng-click="newItem({type:'titleSecond',index:$index})">添加节</button>
+                        <button ng-click="newItem({type:'payArea',index:$index})">添加付费区域</button>
+                    </div>
+                </div>
+
+                <div class="main-content" ng-click="setPosition(item.type,1,$parent.$index,0,$index)"
+                     ng-class="{'gray-back':(curPosition.type == item.type && curPosition.level == 1 && curPosition.first == $parent.$index && curPosition.index == $index)}">
+                     <!--ng-class="{'gray-back':(curPosition.type == item.type && curPosition.level == 1 && curPosition.first == $parent.$index && curPosition.index == $index)}">-->
+                    <div class="tools">
+                        <a ng-click="moveItem(content.childItems,$index,'up')">↑</a>
+                        <a ng-click="moveItem(content.childItems,$index,'down')">↓</a>
+                        <a ng-click="moveItem(content.childItems,$index,'del')">×</a>
+                    </div>
+
+                    <p class="first-title" ng-if="item.type == 'titleFirst'"><input ng-model="item.name" type="text" onclick="this.select();"></p>
+                    <p class="second-title" ng-if="item.type == 'titleSecond'"><input ng-model="item.name"type="text" onclick="this.select();"></p>
+                    <div style="margin-left: 20px">
+                        <content-container item="item"></content-container>
+
+                        <!--<plugin-practice args="item.data" scope="item.scope" ng-if="item.type == 'practise'"></plugin-practice>-->
+                        <!--<plugin-video  args="item.data" scope="item.scope" ng-if="item.type == 'video'"></plugin-video>-->
+                        <!--<plugin-content  args="item.data" scope="item.scope" ng-if="item.type == 'content'" get-editor="getEditor"></plugin-content>-->
+                        <!--<plugin-embed  args="item.data" scope="item.scope" ng-if="item.type == 'embed'"></plugin-embed>-->
+                    </div>
+                </div>
+
+                <div style="height: 30px;padding-left: 20px;line-height: 25px;" ng-show="$last"
+                     ng-init="item.moveLast = false" ng-mouseover="item.moveLast = true" ng-mouseleave="item.moveLast = false">
+                    <div ng-show="$last && item.moveLast">
+                        <button ng-click="newItem({type:'practise',index:$index + 1})">添加试卷</button>
+                        <button ng-click="newItem({type:'video',index:$index + 1})">添加视频</button>
+                        <button ng-click="newItem({type:'content',index:$index + 1},testContent)">添加内容</button>
+                        <button ng-click="newItem({type:'titleFirst',index:$index + 1})">添加章</button>
+                        <button ng-click="newItem({type:'titleSecond',index:$index + 1})">添加节</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+</html>

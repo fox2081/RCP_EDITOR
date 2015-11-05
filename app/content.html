@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp"> <!--<![endif]-->
+<head ng-app="myApp">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>My Editor</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="widthbutton=device-width, initial-scale=1">
+    <link rel="stylesheet" href="app.css">
+    <script type="text/javascript" src="lib/angular/angular.js"></script>
+    <script type="text/javascript"src="lib/angular/angular-route.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery-1.11.1.min.js"></script>
+
+
+    <script type="text/javascript" src="lib/textboxio/textboxio.js"></script>
+    <script type="text/javascript" src="lib/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="lib/tinymce/langs/zh_CN.js"></script>
+    <script type="text/javascript" src="lib/ckeditor/ckeditor.js"></script>
+
+
+    <script type="text/javascript" src="content.js"></script>
+
+    <script type="text/javascript" src="directives/tbio.js"></script>
+    <script type="text/javascript" src="factories/tbioConfigFactory.js"></script>
+    <script type="text/javascript" src="factories/tbioValidationsFactory.js"></script>
+
+
+    <!-- Directives-->
+    <script type="text/javascript" src="directives/courseContent/contentEditor.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginPractice.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginPractice.html"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginVideo.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginVideo.html"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginContent.js"></script>
+    <script type="text/javascript" src="directives/courseContent/pluginContent.html"></script>
+
+    <link rel="stylesheet" href="directives/courseContent/pluginContent.css">
+
+
+    <style></style>
+
+</head>
+<body ng-controller="ctrl">
+
+
+
+
+    <div class="top-head">
+        <div id="topEditor">
+        </div>
+        <div id="topBtn">
+            <a ng-click="execCmd.contentInsert()">分割</a>
+            <a ng-click="execCmd.contentInsert('practise')">插入练习</a>
+            <a ng-click="execCmd.contentInsert('video')">插入视频</a>
+        </div>
+    </div>
+    <button ng-click="getData()">GetData</button>
+
+
+    <!--<div style="width: 100%;height: 30px;line-height: 30px;position: fixed;background-color: #212121;color: white;z-index: 9999">-->
+        <!--<a ng-click="execCmd.showAll()">显示所有</a>-->
+        <!--<a ng-click="execCmd.bold()">加粗</a>-->
+        <!--<a ng-click="execCmd.italic()">斜体</a>-->
+        <!--<a ng-click="execCmd.fontColor()">颜色</a>-->
+    <!--</div>-->
+
+    <div style="margin-top: 80px;"></div>
+
+    <!-- 一级标题-->
+
+    <div class="main">
+        <div class="main-l">
+
+            <button ng-click="getData()">GetData</button>
+            <button ng-click="setData()">SetData</button>
+            <button ng-click="clearData()">Clear</button>
+
+            <div ng-repeat="itemFirst in content.childItems track by $index">
+                <p style="font-weight: bold;font-size: 16px">{{itemFirst.name}}</p>
+                <div ng-repeat="itemSecond in itemFirst.childItems track by $index" style="margin-left: 10px;">
+                    <p style="font-size: 14px">{{itemSecond.name}}</p>
+                </div>
+            </div>
+
+
+            <button ng-click="newItem({type:'titleFirst',level:1,first:0,second:0,index:content.childItems.length})">添加章</button>
+        </div>
+        <div class="main-r">
+
+            <div ng-repeat="itemFirst in content.childItems track by $index">
+
+                <button ng-click="newItem({type:'titleFirst',level:1,first:$parent.$index,second:0,index:$index})">添加章</button>
+
+                <p style="font-weight: bold;font-size: 20px">{{itemFirst.name}}</p>
+
+                <div style="height: 30px;" ng-show="!itemFirst.content.length">
+                    <div>
+                        <button ng-click="newItem({type:'practise',level:1,first:$index,second:0,index:0})">添加试卷</button>
+                        <button ng-click="newItem({type:'video',level:1,first:$index,second:0,index:0})">添加视频</button>
+                        <button ng-click="newItem({type:'content',level:1,first:$index,second:0,index:0},testContent)">添加内容</button>
+                    </div>
+                </div>
+
+                <div ng-repeat="item in itemFirst.content track by $index" style="margin-left: 20px;">
+
+                    <div style="height: 30px;line-height: 30px;"
+                         ng-init="item.move = false" ng-mouseover="item.move = true" ng-mouseleave="item.move = false">
+                        <div ng-show="item.move">
+                            <button ng-click="newItem({type:'practise',level:1,first:$parent.$index,second:0,index:$index})">添加试卷</button>
+                            <button ng-click="newItem({type:'video',level:1,first:$parent.$index,second:0,index:$index})">添加视频</button>
+                            <button ng-click="newItem({type:'content',level:1,first:$parent.$index,second:0,index:$index},testContent)">添加内容</button>
+                        </div>
+                    </div>
+
+
+                    <div class="main-content" ng-click="setPosition(item.type,1,$parent.$index,0,$index)"
+                         ng-class="{'gray-back':(curPosition.type == item.type && curPosition.level == 1 && curPosition.first == $parent.$index && curPosition.index == $index)}">
+                        <div class="tools">
+                            <a ng-click="moveItem(itemFirst.content,$index,'up')">↑</a>
+                            <a ng-click="moveItem(itemFirst.content,$index,'down')">↓</a>
+                            <a ng-click="moveItem(itemFirst.content,$index,'del')">×</a>
+                        </div>
+
+                        <plugin-practice args="item.data" scope="item.scope" ng-if="item.type == 'practise'"></plugin-practice>
+                        <plugin-video  args="item.data" scope="item.scope" ng-if="item.type == 'video'"></plugin-video>
+                        <plugin-content  args="item.data" scope="item.scope" ng-if="item.type == 'content'" get-editor="getEditor"></plugin-content>
+                    </div>
+
+                    <div style="height: 30px;line-height: 30px;" ng-show="$last"
+                         ng-init="item.moveLast = false" ng-mouseover="item.moveLast = true" ng-mouseleave="item.moveLast = false">
+                        <div ng-show="item.moveLast && $last">
+                            <button ng-click="newItem({type:'practise',level:1,first:$parent.$index,second:0,index:$index + 1})">添加试卷</button>
+                            <button ng-click="newItem({type:'video',level:1,first:$parent.$index,second:0,index:$index + 1})">添加视频</button>
+                            <button ng-click="newItem({type:'content',level:1,first:$parent.$index,second:0,index:$index + 1},testContent)">添加内容</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div ng-repeat="itemSecond in itemFirst.childItems track by $index" style="margin-left: 10px;">
+
+                    <p style="font-weight: bold;font-size: 20px">{{itemSecond.name}}</p>
+
+                    <div ng-repeat="item in itemSecond.content track by $index" style="margin-left: 20px;">
+
+                        <div style="height: 30px;line-height: 30px;"
+                             ng-init="item.move = false" ng-mouseover="item.move = true" ng-mouseleave="item.move = false">
+                            <div ng-show="item.move">
+                                <button ng-click="newItem({type:'practise',level:2,first:$parent.$parent.$index,second:$parent.$index,index:$index})">添加试卷</button>
+                                <button ng-click="newItem({type:'video',level:2,first:$parent.$parent.$index,second:$parent.$index,index:$index})">添加视频</button>
+                                <button ng-click="newItem({type:'content',level:2,first:$parent.$parent.$index,second:$parent.$index,index:$index},testContent)">添加内容</button>
+                            </div>
+                        </div>
+
+                        <div class="main-content" ng-click="setPosition(item.type,2,$parent.$parent.$index,$parent.$index,$index)"
+                             ng-class="{'gray-back':(curPosition.type == item.type && curPosition.level == 2 && curPosition.first == $parent.$parent.$index && curPosition.second == $parent.$index && curPosition.index == $index)}">
+                            <div class="tools">
+                                <a ng-click="moveItem(itemSecond.content,$index,'up')">↑</a>
+                                <a ng-click="moveItem(itemSecond.content,$index,'down')">↓</a>
+                                <a ng-click="moveItem(itemSecond.content,$index,'del')">×</a>
+                            </div>
+
+                            <plugin-practice args="item.data" scope="item.scope" ng-if="item.type == 'practise'"></plugin-practice>
+                            <plugin-video args="item.data" scope="item.scope" ng-if="item.type == 'video'"></plugin-video>
+                            <plugin-content args="item.data" scope="item.scope" ng-if="item.type == 'content'" get-editor="getEditor"></plugin-content>
+                        </div>
+
+                        <div style="height: 30px;line-height: 30px;" ng-show="$last"
+                             ng-init="item.moveLast = false" ng-mouseover="item.moveLast = true" ng-mouseleave="item.moveLast = false">
+                            <div ng-show="item.moveLast && $last">
+                                <button ng-click="newItem({type:'practise',level:2,first:$parent.$parent.$index,second:$parent.$index,index:$index + 1})" ng-show="$last">添加试卷</button>
+                                <button ng-click="newItem({type:'video',level:2,first:$parent.$parent.$index,second:$parent.$index,index:$index + 1})">添加视频</button>
+                                <button ng-click="newItem({type:'content',level:2,first:$parent.$parent.$index,second:$parent.$index,index:$index + 1},testContent)">添加内容</button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<div style="border: 0px solid #68b9f3">
+    <!--<p>123123</p>-->
+    <!--<div contenteditable="true" id="{{args.id}}"-->
+        <!--style="width: 100%;height:auto"-->
+         <!--ng-model="args.content"-->
+         <!--content-editor>-->
+
+    <!--</div>-->
+    <!--<textarea id="textarea{{args.id}}" placeholder="请输入内容"-->
+              <!--ng-show=""-->
+              <!--style="width: 100%;height: 100%"-->
+              <!--args="args"-->
+              <!--get-editor="getEditor"-->
+              <!--ng-model="args.content"-->
+              <!--content-editor></textarea>-->
+    <div id="{{args.id}}" style="width: 100%;height: 100%;background: white"
+         args="args"
+         get-editor="getEditor"
+         ng-model="args.content"
+         content-editor
+         scope="scope"   ng-bind-html="deliberatelyTrustDangerousSnippet(args.content)"
+         contenteditable="true" ng-click="activeEditor()"></div>
+
+    <!--<div style="width: 100%;height: 100%;background: white" ng-show="!disContent"-->
+            <!--ng-bind-html="deliberatelyTrustDangerousSnippet(args.content)"  ng-click="activeEditor()">-->
+    <!--</div>-->
+    <!--<button ng-click="getData()">GetData</button>-->
+</div>

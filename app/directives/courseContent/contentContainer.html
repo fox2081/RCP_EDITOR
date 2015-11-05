@@ -1,0 +1,18 @@
+<div ng-style="item.data.style" class="class1">
+
+    <div ng-if="!item.status" class="container-hide">
+
+        <span style="margin-top: 20px;">组件加载中</span>
+
+    </div>
+
+    <div ng-if="item.status" class="container-show">
+
+        <plugin-practice args="item.data" scope="item.scope" ng-if="item.type == 'practise'"></plugin-practice>
+        <plugin-video args="item.data" scope="item.scope" ng-if="item.type == 'video'"></plugin-video>
+        <plugin-content args="item.data" scope="item.scope" ng-if="item.type == 'content'" get-editor="getEditor"></plugin-content>
+        <plugin-embed args="item.data" scope="item.scope" ng-if="item.type == 'embed'"></plugin-embed>
+
+        <plugin-pay-area args="item.data" scope="item.scope" ng-if="item.type == 'payArea'"></plugin-pay-area>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+<div style="background: #f5fbce;border: 3px solid #ad8b0e">
+    <div style="border-bottom: 1px solid #ad8b0e;height: 20px;padding: 10px;font-weight: bolder">
+        付费内容
+    </div>
+    <div ng-repeat="childItem in args.items track by $index" style="padding: 10px;margin-bottom: 5px;margin-top: 5px;">
+
+
+        <plugin-practice args="childItem.data" scope="childItem.scope" ng-if="childItem.type == 'practise'"></plugin-practice>
+        <plugin-video args="childItem.data" scope="childItem.scope" ng-if="childItem.type == 'video'"></plugin-video>
+        <plugin-content args="childItem.data" scope="childItem.scope" ng-if="childItem.type == 'content'" get-editor="getEditor"></plugin-content>
+        <plugin-embed args="childItem.data" scope="childItem.scope" ng-if="childItem.type == 'embed'"></plugin-embed>
+
+    </div>
+</div>
